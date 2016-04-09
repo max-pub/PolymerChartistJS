@@ -1,0 +1,107 @@
+<script src="chartist/chartist.min.js"></script>
+<script src="chartist/pointlabels/chartist-plugin-pointlabels.js"></script>
+<link rel="stylesheet" href="chartist/chartist.min.css">
+
+
+<dom-module id="line-chart">
+    <style>
+        h3{
+            color: var(--title-color);
+            font-weight: 300;
+        }
+        h3 span:last-child {
+            float: right;
+            color: var(--unit-color);
+        }
+        #chart {
+            width: 110%;
+            left: -5%;
+        }
+        #chart .ct-series-a .ct-line {
+            stroke: green !important;
+        }
+        .ct-series-a .ct-line {
+            stroke: green;
+        }
+        .ct-label{
+            stroke: orange;
+        }
+        #chart .ct-series .ct-point {
+            stroke-width: 5px;
+            stroke: silver;
+        }
+    </style>
+
+    <template>
+        <h3>
+            <span>[[title]]</span>
+            <span>in [[unit]]</span>
+        </h3>
+        <div id='chart' class$="ct-double-octave [[title]]"></div>
+    </template>
+
+
+</dom-module>
+
+
+
+
+
+<script>
+    Polymer({
+        is: "line-chart",
+        properties: {
+            name: String,
+            unit: String,
+            data: {
+                type: Array,
+                observer: 'dataChange'
+            },
+            labels: {
+                type: Array,
+                observer: 'labelChange'
+            }
+        },
+
+        created: function () {},
+        labelChange: function () {},
+        dataChange: function () {
+                //                setTimeout(function () {
+                // console.log('line-chart', this.name, this.data, this.labels);
+                var data = {
+                    labels: new Array(8),
+                    series: [this.data]
+                };
+                var high = Math.max.apply(0, this.data);
+                if (high - low) high += ((high - low) * 1.2);
+                else high *= 1.1;
+
+                var low = Math.min.apply(0, this.data);
+                //                high *= 120 / 100;
+                var options = {
+                    chartPadding: 0,
+                    //                    low: 0,
+                    //                    high: 1200,
+                    high: high,
+                    axisX: {
+                        showGrid: false,
+                        showLabel: false
+                    },
+                    axisY: {
+                        showGrid: false,
+                        showLabel: false
+                    },
+                    plugins: [Chartist.plugins.ctPointLabels({
+                        textAnchor: 'middle'
+                    })]
+                };
+                new Chartist.Line(this.$.chart, data, options);
+                //                }.bind(this), 1000);
+            }
+            // fullWidth: true,
+            // showArea: true,
+            // low: 200,
+            // high:500,
+            //                low: low - 0,
+    });
+</script>
